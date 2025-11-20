@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Home — SocialSync</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="blob"></div>
+
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;z-index:2;position:relative">
+  <div class="card" style="max-width:760px;padding:28px">
+
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="logo" style="background:linear-gradient(135deg,#00eaff,#0066ff);padding:12px;border-radius:10px;font-weight:800">SS</div>
+        <div>
+          <div style="font-weight:800">SocialSync</div>
+          <div class="helper">Welcome to your home feed</div>
+        </div>
+      </div>
+
+      <button id="logoutBtn" class="btn link">Logout</button>
+    </div>
+
+    <div style="margin-top:18px">
+      <h3 id="welcomeUser" style="color:var(--soft)">Hello</h3>
+      <p id="userInfo" class="helper">Loading profile…</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const token = localStorage.getItem('token');
+  if(!token){
+    location.replace("login.html");
+  } else {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      document.getElementById("welcomeUser").innerText = `Hello, ${payload.username || payload.sub}`;
+      document.getElementById("userInfo").innerText = `Logged in as ${payload.sub}`;
+    } catch {
+      document.getElementById("userInfo").innerText = "Profile info unavailable.";
+    }
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    location.replace("login.html");
+  });
+</script>
+
+</body>
+</html>

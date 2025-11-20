@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Login — SocialSync</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="blob"></div>
+
+<div class="app-wrap fade-in">
+
+  <!-- Left panel -->
+  <div class="panel">
+
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <div class="logo" style="background:linear-gradient(135deg,#00eaff,#0066ff);padding:12px;border-radius:10px;font-weight:800">
+        SS
+      </div>
+      <div>
+        <div style="font-weight:800;font-size:18px">SocialSync</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45)">Connect with ease</div>
+      </div>
+    </div>
+
+    <p class="helper" style="max-width:520px">
+      Sign in using your email, username or phone number.
+    </p>
+
+    <div style="margin-top:20px">
+      <a href="signup.html" class="btn link" style="padding:10px 12px">Create a free account</a>
+    </div>
+  </div>
+
+  <!-- Login Card -->
+  <div class="card form-area">
+
+    <div class="header">
+      <div class="brand">
+        <div class="logo" style="background:linear-gradient(135deg,#00eaff,#0066ff);padding:12px;border-radius:10px;font-weight:800">SS</div>
+      </div>
+
+      <div class="lang-select">
+        <select id="language">
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+          <option value="fr">FR</option>
+        </select>
+      </div>
+    </div>
+
+    <h2 class="title" id="loginTitle">Welcome Back</h2>
+    <p class="subtitle" id="loginSubtitle">Please enter your details to login.</p>
+
+    <form id="loginForm">
+
+      <div class="input">
+        <input id="identifier" placeholder=" " required />
+        <label id="label-identifier">Email, username or phone</label>
+      </div>
+
+      <div class="input">
+        <input id="password" type="password" placeholder=" " required />
+        <label id="label-password">Password</label>
+        <div id="togglePassword" class="pw-toggle">Show</div>
+      </div>
+
+      <p id="error-msg" class="helper error" style="display:none"></p>
+
+      <button id="loginBtn" class="btn primary" type="submit">
+        <span class="spinner" style="display:none"></span>
+        <span class="label">Login</span>
+      </button>
+    </form>
+
+    <p class="footer-text" style="margin-top:12px">
+      Don't have an account? <a href="signup.html">Sign up</a>
+    </p>
+
+  </div>
+</div>
+
+<div id="successOverlay" class="success-overlay">
+  <div class="success-card">
+    <h3 id="successTitle">Success</h3>
+    <p id="successMsg">You have logged in.</p>
+  </div>
+</div>
+
+<script src="language.js"></script>
+<script src="login.js"></script>
+
+</body>
+</html>

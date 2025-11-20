@@ -1,0 +1,199 @@
+:root{
+  --bg-1: #0a0f24;
+  --bg-2: #0d1b38;
+  --card-bg: rgba(25,28,36,0.9);
+  --accent1: #00eaff;
+  --accent2: #0066ff;
+  --glass: rgba(255,255,255,0.04);
+  --soft: #bfefff;
+  --danger: #ff6b6b;
+}
+
+/* ---------- Page base ---------- */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  background: linear-gradient(135deg,var(--bg-1),var(--bg-2));
+  overflow:hidden;
+  color: #e9f6ff;
+}
+
+/* animated moving blob */
+.blob{
+  position:fixed;
+  width:750px;height:750px;
+  left:-120px; top:-80px;
+  background: radial-gradient(circle at 30% 30%, rgba(0,234,255,0.22) 0%, rgba(0,102,255,0.06) 40%, transparent 50%);
+  filter: blur(140px);
+  animation: blobMove 14s ease-in-out infinite;
+  pointer-events:none;
+  z-index:0;
+}
+@keyframes blobMove{
+  0%{transform: translate(-20px,0) scale(1)}
+  35%{transform: translate(60px,40px) scale(1.08)}
+  70%{transform: translate(-80px,90px) scale(0.98)}
+  100%{transform: translate(-20px,0) scale(1)}
+}
+
+/* ---------- Center wrap ---------- */
+.app-wrap{
+  position:relative;
+  z-index:2;
+  width:100%;
+  max-width:980px;
+  padding:32px;
+  display:grid;
+  grid-template-columns: 1fr 420px;
+  gap:28px;
+  align-items:center;
+}
+
+/* left panel */
+.panel {
+  padding:28px;
+  border-radius:16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.03);
+  box-shadow: 0 8px 40px rgba(3,6,23,0.55);
+  min-height: 480px;
+}
+
+/* card */
+.card {
+  position:relative;
+  z-index:3;
+  width:100%;
+  border-radius:16px;
+  padding:28px;
+  background: linear-gradient(180deg, rgba(30,34,44,0.86), rgba(20,22,30,0.8));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0,234,255,0.06);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  overflow:hidden;
+}
+
+/* ---------- Floating Inputs ---------- */
+.input {
+  position:relative;
+  margin:12px 0 6px 0;
+}
+.input input {
+  width:100%;
+  padding:14px 14px 14px 14px;
+  border-radius:10px;
+  border:none;
+  background: var(--glass);
+  color:#eafcff;
+  font-size:15px;
+  outline:none;
+  transition: box-shadow .18s ease;
+}
+.input label {
+  position:absolute;
+  left:14px;
+  top:14px;
+  font-size:14px;
+  color: rgba(255,255,255,0.6);
+  pointer-events:none;
+  transition: .15s ease;
+}
+.input input:not(:placeholder-shown) + label,
+.input input:focus + label {
+  top:-8px;
+  font-size:12px;
+  color:var(--soft);
+}
+
+/* PW Toggle */
+.pw-toggle {
+  position:absolute;
+  right:10px;
+  top:12px;
+  cursor:pointer;
+  color:rgba(255,255,255,0.6);
+}
+
+/* Buttons */
+.btn {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:12px 16px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+}
+.btn.primary {
+  width:100%;
+  background: linear-gradient(90deg,var(--accent1),var(--accent2));
+  background-size:200%;
+  color:#011;
+  box-shadow: 0 10px 30px rgba(0,102,255,0.12);
+  transition: .18s ease;
+}
+.btn.primary:hover { background-position:100% 0; }
+
+/* Spinner */
+.spinner {
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,0.3);
+  border-top-color:#fff;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg) } }
+
+.btn.loading .label { opacity:0; }
+.btn.loading .spinner { display:block }
+
+/* success popup */
+.success-overlay {
+  position:fixed;
+  inset:0;
+  background:rgba(4,8,20,0.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s ease;
+}
+.success-overlay.show { opacity:1; pointer-events:auto; }
+
+.success-card {
+  background:rgba(15,20,30,0.96);
+  padding:28px;
+  border-radius:14px;
+  border:1px solid rgba(0,234,255,0.2);
+  text-align:center;
+  transform:scale(.95);
+  transition:.2s ease;
+}
+.success-overlay.show .success-card { transform:scale(1); }
+
+/* shake */
+.shake { animation: shakeX .4s both; }
+@keyframes shakeX {
+  25%{ transform:translateX(-5px);}
+  50%{ transform:translateX(5px);}
+  75%{ transform:translateX(-4px);}
+}
+
+/* responsive */
+@media(max-width:900px){
+  .app-wrap{
+    grid-template-columns:1fr;
+    padding:14px;
+  }
+  .panel { order:2; }
+}
