@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create New Post — SocialSync</title>
+
+    <style>
+        /* Instagram-Style Create Post Design */
+        :root {
+            --ig-blue: #0095f6;
+            --ig-text: #262626;
+            --ig-text-light: #8e8e8e;
+            --ig-border: #dbdbdb;
+            --ig-hover: #f0f0f0;
+            --ig-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: rgba(0, 0, 0, 0.65);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            background: var(--ig-bg);
+            border-radius: 12px;
+            max-width: 850px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        /* Modal Header */
+        .modal-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--ig-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--ig-text);
+            flex: 1;
+            text-align: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--ig-text);
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            opacity: 0.7;
+        }
+
+        .share-btn {
+            background: none;
+            border: none;
+            color: var(--ig-blue);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .share-btn:hover {
+            color: #1877f2;
+        }
+
+        .share-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            display: flex;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        /* Left Side: Media Upload/Preview */
+        .media-section {
+            flex: 1;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid var(--ig-border);
+            position: relative;
+            min-height: 350px;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            text-align: center;
+            padding: 40px;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-zone:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        .upload-icon {
+            width: 96px;
+            height: 96px;
+            margin-bottom: 16px;
+            transition: transform 0.2s;
+        }
+
+        .upload-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--ig-text);
+            stroke-width: 1;
+        }
+
+        .upload-text {
+            font-size: 22px;
+            color: var(--ig-text);
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            font-size: 14px;
+            color: var(--ig-text-light);
+            margin-bottom: 20px;
+        }
+
+        .select-btn {
+            background: var(--ig-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .select-btn:hover {
+            background: #1877f2;
+        }
+
+        /* Media Preview Grid */
+        .media-preview {
+            display: none;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 12px;
+            gap: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-auto-rows: 150px;
+        }
+
+        .media-preview.active {
+            display: grid;
+        }
+
+        .preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #e0e0e0;
+        }
+
+        .preview-item img,
+        .preview-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-media-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-media-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        /* Right Side: Form */
+        .form-section {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ig-text);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            border: 1px solid var(--ig-border);
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--ig-text);
+            resize: none;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--ig-text-light);
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--ig-blue);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            max-height: 200px;
+        }
+
+        .char-counter {
+            font-size: 12px;
+            color: var(--ig-text-light);
+            text-align: right;
+        }
+
+        /* Tag Chips */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .tag-chip {
+            background: #efefef;
+            border-radius: 16px;
+            padding: 6px 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--ig-text);
+        }
+
+        .tag-chip .remove {
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--ig-text-light);
+        }
+
+        .tag-chip .remove:hover {
+            color: #ed4956;
+        }
+
+        /* Advanced Options Toggle */
+        .advanced-toggle {
+            background: none;
+            border: none;
+            color: var(--ig-blue);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 0;
+            text-align: left;
+        }
+
+        .advanced-toggle:hover {
+            text-decoration: underline;
+        }
+
+        .advanced-section {
+            display: none;
+        }
+
+        .advanced-section.active {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Dropdown Select */
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-display {
+            width: 100%;
+            border: 1px solid var(--ig-border);
+            border-radius: 6px;
+            padding: 10px 32px 10px 12px;
+            font-size: 14px;
+            color: var(--ig-text);
+            cursor: pointer;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .select-display:hover {
+            background: var(--ig-hover);
+        }
+
+        .select-wrapper::after {
+            content: '▾';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--ig-text-light);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--ig-border);
+            border-radius: 6px;
+            margin-top: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--ig-text);
+        }
+
+        .dropdown-item:hover {
+            background: var(--ig-hover);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal-body {
+                flex-direction: column;
+            }
+
+            .media-section {
+                border-right: none;
+                border-bottom: 1px solid var(--ig-border);
+                min-height: 300px;
+            }
+
+            .form-section {
+                max-height: 50vh;
+            }
+        }
+
+        /* Hidden File Input */
+        #fileInput {
+            display: none;
+        }
+
+        /* Loading State */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="modal-overlay">
+        <div class="modal-container">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <button class="close-btn" id="closeBtn" title="Close">&times;</button>
+                <div class="modal-title" id="modalTitle">Create new post</div>
+                <button class="share-btn" id="shareBtn">Share</button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+
+                <!-- Left: Media Section -->
+                <div class="media-section">
+
+                    <!-- Upload Zone -->
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 97 77" fill="none">
+                                <path d="M46.5 1.5L1.5 46.5H91.5L46.5 1.5Z" stroke-width="3" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M46.5 21.5L21.5 46.5H71.5L46.5 21.5Z" stroke-width="3" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <circle cx="32" cy="33" r="6" />
+                                <rect x="1.5" y="46.5" width="90" height="28" stroke-width="3" />
+                            </svg>
+                        </div>
+                        <div class="upload-text">Drag photos and videos here</div>
+                        <div class="upload-subtext">or</div>
+                        <button class="select-btn" id="selectBtn">Select from computer</button>
+                    </div>
+
+                    <!-- Media Preview -->
+                    <div class="media-preview" id="mediaPreview"></div>
+                </div>
+
+                <!-- Right: Form Section -->
+                <div class="form-section">
+
+                    <!-- Caption -->
+                    <div class="form-field">
+                        <textarea class="form-textarea" id="caption" placeholder="Write a caption..."></textarea>
+                        <div class="char-counter">
+                            <span id="charCount">0</span>/2,200
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="form-field">
+                        <label class="form-label">
+                            📍 Add location
+                        </label>
+                        <div style="display: flex; gap: 8px;">
+                            <input class="form-input" id="location" placeholder="Add location..." style="flex: 1;">
+                            <button id="gpsBtn"
+                                style="background:none;border:1px solid var(--ig-border);border-radius:6px;padding:8px 12px;cursor:pointer;font-size:16px;"
+                                title="Use current location">🎯</button>
+                        </div>
+                    </div>
+
+                    <!-- Tag People -->
+                    <div class="form-field">
+                        <label class="form-label">
+                            👤 Tag people
+                        </label>
+                        <input class="form-input" id="tagInput" placeholder="Search people...">
+                        <div class="tags-container" id="tagsContainer"></div>
+                    </div>
+
+                    <!-- Advanced Options -->
+                    <button class="advanced-toggle" id="advancedToggle">
+                        <span id="advancedText">Show advanced options</span>
+                    </button>
+
+                    <div class="advanced-section" id="advancedSection">
+
+                        <!-- Description -->
+                        <div class="form-field">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-textarea" id="description" placeholder="Add a description..."
+                                style="min-height: 60px;"></textarea>
+                        </div>
+
+                        <!-- Hashtags -->
+                        <div class="form-field">
+                            <label class="form-label"># Hashtags</label>
+                            <input class="form-input" id="tags" placeholder="Add hashtags (comma separated)">
+                        </div>
+
+                        <!-- Feeling -->
+                        <div class="form-field">
+                            <label class="form-label">Feeling</label>
+                            <div class="select-wrapper">
+                                <div class="select-display" id="feelingDisplay">How are you feeling?</div>
+                                <div class="dropdown-menu" id="feelingDropdown">
+                                    <div class="dropdown-item">😊 Happy</div>
+                                    <div class="dropdown-item">😢 Sad</div>
+                                    <div class="dropdown-item">😎 Cool</div>
+                                    <div class="dropdown-item">🤩 Excited</div>
+                                    <div class="dropdown-item">😡 Angry</div>
+                                    <div class="dropdown-item">😍 Loved</div>
+                                    <div class="dropdown-item">🙏 Blessed</div>
+                                    <div class="dropdown-item">💖 Grateful</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Music -->
+                        <div class="form-field">
+                            <label class="form-label">🎵 Add music</label>
+                            <div class="select-wrapper">
+                                <div class="select-display" id="musicDisplay">Select background music...</div>
+                                <div class="dropdown-menu" id="musicDropdown">
+                                    <div class="dropdown-item">Song 1</div>
+                                    <div class="dropdown-item">Song 2</div>
+                                    <div class="dropdown-item">Song 3</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" accept="image/*,video/*,audio/*" multiple>
+
+    <script src="post_instagram.js"></script>
+</body>
+
+</html>
